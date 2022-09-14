@@ -1,6 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import Token from '../Auth/Token';
 import { UbidotsResponse } from './auth.models';
+import Auth from '../Auth/Auth';
 
 const ApiInstance = axios.create({
   baseURL: `https://industrial.api.ubidots.com/api/`,
@@ -10,9 +11,10 @@ const ApiInstance = axios.create({
 ApiInstance.interceptors.request.use(async config => {
   const token = Token.getToken();
   if (!token) {
-    //Try login --
-    throw new Error('Token is required, configure it with Auth.authenticate(Token) or Token.setToken(Token)');
+    const authenticated = await Auth.getInstance().authenticate();
+    if (!authenticated) throw new Error('Token is required, configure it with Auth.authenticate(Token) or Token.setToken(Token)');
   }
+
   return { ...config, headers: { ...config.headers, 'X-Auth-Token': token } };
 });
 
@@ -28,9 +30,9 @@ class Api {
   }
 
 
-  static async get<T>(url: string, config?: object): Promise<UbidotsResponse<T>> {
+  static async get<T>(url: string, config?: AxiosRequestConfig<any>): Promise<UbidotsResponse<T>> {
     //TODO: Handle response and return IApiData in all responses
-    const response: any = await ApiInstance.get(`${this.#version}/${url}`, config);
+    const response = await ApiInstance.get<UbidotsResponse<T>>(`${this.#version}/${url}`, config);
     return {
       count: response.data.count,
       next: response.data.next,

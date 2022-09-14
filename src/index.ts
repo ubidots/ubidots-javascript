@@ -8,10 +8,11 @@ async function main() {
 
   const AuthInstance = Auth.getInstance();
 
-  await AuthInstance.authenticate({ apiKey: 'API-KEY' });
-  const devices: UbidotsResponse<Device[]> = await Ubidots.getDevices();
+  await AuthInstance.authenticate({ apiKey: 'BBFF-61a88d34eb81a3000edc6849a37dc40e1fb' });
+  const devices: UbidotsResponse<Device[]> = await Ubidots.Devices().getAll();
   const { results } = devices;
-  console.log(results.map(({ label }) => label));
+  console.log(results);
+  // console.log(results.map(({ label }) => label));
 }
 
 main();

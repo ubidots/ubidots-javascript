@@ -3,7 +3,7 @@ import Token from './Token';
 
 interface IAuth {
   token?: string;
-  apiKey?: string;
+  apiKey?: string | null;
 }
 
 
@@ -12,7 +12,7 @@ class Auth {
   //Token should be here
   static #instance: Auth;
   #tokenAuth: Token = '';
-
+  #apiKey: string | null = '';
 
   static getInstance(): Auth {
     if (!Auth.#instance) {
@@ -23,8 +23,9 @@ class Auth {
   }
 
 
-  async authenticate({ apiKey }: IAuth) {
-    if (!apiKey) {
+  async authenticate({ apiKey = null }: IAuth = {}) {
+    this.#apiKey = apiKey;
+    if (!this.#apiKey) {
       throw new Error('API key is required');
     }
 
@@ -32,12 +33,12 @@ class Auth {
       method: 'POST',
       url: 'https://industrial.api.ubidots.com/api/v1.6/auth/token',
       headers: {
-        'x-ubidots-apikey': apiKey,
+        'x-ubidots-apikey': this.#apiKey,
       },
     });
 
     Token.setToken(data.data.token);
-    return data.data.token;
+    return !!data.data.token;
   }
 }
 

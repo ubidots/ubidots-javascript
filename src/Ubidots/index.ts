@@ -2,8 +2,12 @@ import Api from '../Api/Api';
 import Devices from '../entities/devices';
 
 class Ubidots {
-  static getDevices() {
-    return Devices.getAll();
+  static #devices = new Devices();
+
+  // Filters and sorters
+
+  static Devices() {
+    return this.#devices;
   }
 }
 
