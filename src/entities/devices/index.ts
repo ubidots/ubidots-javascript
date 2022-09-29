@@ -3,12 +3,10 @@ import { Device } from './device.model';
 import { UbidotsResponse } from '../../Api/auth.models';
 
 
-type  DeviceFIlter = ''
+interface Builder<T> {
+  params: Record<string, string | number>;
 
-interface Model<T> {
-  getAll(): Promise<UbidotsResponse<T[]>>;
-
-  get(id: string): Promise<UbidotsResponse<T>>;
+  get(): Promise<UbidotsResponse<T[]>>;
 }
 
 type CommonOperations = 'name'
@@ -34,23 +32,15 @@ type Sortable =
   | 'lastActivity'
 
 
-class Devices implements Model<Device> {
+class Devices implements Builder<Device> {
 
+  params: Record<string, string | number> = {};
 
-  params: Record<string, number | string> = {};
-
-  public async getAll(): Promise<UbidotsResponse<Device[]>> {
+  public async get(): Promise<UbidotsResponse<Device[]>> {
     const response = await Api.get<Device[]>('devices?', { params: this.params });
     // On fetch
     this.params = {};
     return response;
-  }
-
-
-  public async get(id: string): Promise<UbidotsResponse<Device>> {
-    const data = await Api.get<Device>(`devices/${id}`, this.params);
-    this.params = {};
-    return data;
   }
 
   public filter(key: Filter, value: string | number) {
@@ -63,5 +53,6 @@ class Devices implements Model<Device> {
     return this;
   }
 }
+
 
 export default Devices;

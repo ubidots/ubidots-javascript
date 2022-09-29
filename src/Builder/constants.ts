@@ -1,0 +1,30 @@
+export type Filter =
+  '' |
+  '__iexact' |
+  '__contains' |
+  '__icontains' |
+  '__contained_by' |
+  '__overlap' |
+  '__len' |
+  '__startswith' |
+  '__istartswith' |
+  '__endswith' |
+  '__iendswith' |
+  '__in' |
+  '__gt' |
+  '__gte' |
+  '__lt' |
+  '__lte' |
+  '__range' |
+  '__isnull' |
+  '__has_key' |
+  '__has_any_keys' |
+  '__has_keys' |
+  '__date' |
+  '__year' |
+  '__month' |
+  '__day' |
+  '__week' |
+  '__hour' |
+  '__minute' |
+  '__second'
