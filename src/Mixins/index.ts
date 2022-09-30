@@ -2,6 +2,7 @@ import { UbidotsResponse } from '../Api/auth.models';
 import { Device } from '../entities/devices/device.model';
 import { BuildManager } from '../Builder/Builder';
 import Api from '../Api/Api';
+import { NumberFilter } from '../Filters/Filters';
 
 
 export const MixinContainable = (superClass: any) => class extends superClass {
@@ -12,9 +13,9 @@ export const MixinContainable = (superClass: any) => class extends superClass {
   }
 };
 
-export const MixinEqualable = (superClass: any, ignoreCae = false) => class extends superClass {
-  public equal(value: string) {
-    const suffix = ignoreCae ? '' : '__iexact';
+export const MixinEqualable = (superClass: any) => class extends superClass {
+  public is(value: string, ignoreCase: boolean = false) {
+    const suffix = ignoreCase ? '' : '__iexact';
     BuildManager.buildQuery(suffix, value);
     return this;
   }
@@ -90,68 +91,39 @@ export const MixinContainedBy = (superClass: any) => class extends superClass {
 
 
 export const MixinDates = (superClass: any) => class extends superClass {
-  field: string = '';
 
   public get year() {
-    this.field = 'year';
-    return this;
+    BuildManager.addField('year');
+    return new NumberFilter();
   }
 
   public get month() {
-    this.field = 'month';
-    return this;
+    BuildManager.addField('month');
+    return new NumberFilter();
   }
 
   public get day() {
-    this.field = 'day';
-    return this;
+    BuildManager.addField('day');
+    return new NumberFilter();
   }
 
   public get week() {
-    this.field = 'week';
-    return this;
+    BuildManager.addField('week');
+    return new NumberFilter();
   }
 
   public get hour() {
-    this.field = 'hour';
-    return this;
-
+    BuildManager.addField('hour');
+    return new NumberFilter();
   }
 
   public get minute() {
-    this.field = 'minute';
-    return this;
+    BuildManager.addField('minute');
+    return new NumberFilter();
   }
 
   public get second() {
-    this.field = 'second';
-    return this;
-  }
-
-
-  public gt(value: string) {
-    BuildManager.buildQuery(`${this.field}__gt`, value);
-    return this;
-  }
-
-  public lt(value: string) {
-    BuildManager.buildQuery(`${this.field}__lt`, value);
-    return this;
-  }
-
-  public lte(value: string) {
-    BuildManager.buildQuery(`${this.field}__lte`, value);
-    return this;
-  }
-
-  public gte(value: string) {
-    BuildManager.buildQuery(`${this.field}__gte`, value);
-    return this;
-  }
-
-
-  public is(value: string) {
-    BuildManager.buildQuery('', value);
-    return this;
+    BuildManager.addField('second');
+    return new NumberFilter();
   }
 };

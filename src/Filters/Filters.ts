@@ -20,6 +20,26 @@ export class BaseFilter {
     BuildManager.reset();
     return response;
   }
+
+  public orderBy(field: string, order: 'asc' | 'desc' = 'asc') {
+    const preffix = order === 'asc' ? '' : '-';
+
+    BuildManager.addRawQuery(`${preffix}sort_by`, field);
+    return this;
+  }
+
+  public pick(fields: string[]) {
+    BuildManager.addRawQuery('fields', fields.join(','));
+    return this;
+  }
+
+  public paginate(page: number, pageSize: number) {
+    BuildManager.addRawQuery('page', page);
+    BuildManager.addRawQuery('page_size', pageSize);
+    return this;
+  }
+
+
 }
 
 
