@@ -1,58 +1,29 @@
-import Api from '../../Api/Api';
-import { Device } from './device.model';
-import { UbidotsResponse } from '../../Api/auth.models';
+import { ArrayFilter, BooleanFilter, IDFilters, NumberFilter, StringFilter } from '../../Filters/Filters';
+import { Buildable } from '../../Builder/Builder';
+
+type FilterTypes =
+  typeof StringFilter
+  | typeof IDFilters
+  | typeof BooleanFilter
+  | typeof NumberFilter
+  | typeof ArrayFilter;
 
 
-interface Builder<T> {
-  params: Record<string, string | number>;
-
-  get(): Promise<UbidotsResponse<T[]>>;
+export class Devices extends Buildable {
+  protected entity: string = 'devices';
+  // Just to test
+  fieldsWithFilters: Record<string, FilterTypes> = {
+    id: IDFilters,
+    name: StringFilter,
+    label: StringFilter,
+    description: StringFilter,
+    context: StringFilter,
+    isActive: BooleanFilter,
+    tags: ArrayFilter,
+    variables: StringFilter,
+    status: StringFilter,
+    last_activity: StringFilter,
+    created_at: StringFilter,
+    updated_at: StringFilter,
+  };
 }
-
-type CommonOperations = 'name'
-  | 'label'
-  | 'organization'
-  | 'variablesNumber'
-  | 'isActive'
-  | 'description'
-  | 'createdAt'
-  | 'lastActivity'
-
-
-type Filter = CommonOperations | 'tags' | 'url' | 'properties';
-
-type Sortable =
-  'name'
-  | 'label'
-  | 'organization'
-  | 'variablesNumber'
-  | 'isActive'
-  | 'description'
-  | 'createdAt'
-  | 'lastActivity'
-
-
-class Devices implements Builder<Device> {
-
-  params: Record<string, string | number> = {};
-
-  public async get(): Promise<UbidotsResponse<Device[]>> {
-    const response = await Api.get<Device[]>('devices?', { params: this.params });
-    // On fetch
-    this.params = {};
-    return response;
-  }
-
-  public filter(key: Filter, value: string | number) {
-    this.params[key] = value;
-    return this;
-  }
-
-  public sort(key: Sortable, ordering: 'asc' | 'desc') {
-    this.params['sort_by'] = ordering === 'asc' ? key : `-${key}`;
-    return this;
-  }
-}
-
-
-export default Devices;

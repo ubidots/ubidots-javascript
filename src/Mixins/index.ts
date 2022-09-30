@@ -47,3 +47,46 @@ export const MixinIsNull = (superClass: any) => class extends superClass {
   }
 };
 
+export const MixinGT = (superClass: any) => class extends superClass {
+  public gt(value: string) {
+    BuildManager.params[`${BuildManager.field}__gt`] = value;
+    return this;
+  }
+};
+
+export const MixinGTE = (superClass: any) => class extends superClass {
+  public gte(value: string) {
+    BuildManager.params[`${BuildManager.field}__gte`] = value;
+    return this;
+  }
+};
+
+
+export const MixinLT = (superClass: any) => class extends superClass {
+  public lt(value: string) {
+    BuildManager.params[`${BuildManager.field}__lt`] = value;
+    return this;
+  }
+};
+
+export const MixinLTE = (superClass: any) => class extends superClass {
+  public lte(value: string) {
+    BuildManager.params[`${BuildManager.field}__lte`] = value;
+    return this;
+  }
+};
+
+export const MixinLen = (superClass: any) => class extends superClass {
+  public len(value: number) {
+    BuildManager.params[`${BuildManager.field}__len`] = value;
+    return this;
+  }
+};
+
+export const MixinContainedBy = (superClass: any) => class extends superClass {
+  public containedBy(value: string) {
+    BuildManager.params[`${BuildManager.field}__contained_by`] = value;
+    return this;
+  }
+};
+

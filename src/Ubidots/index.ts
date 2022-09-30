@@ -1,5 +1,5 @@
 import Api from '../Api/Api';
-import { Devices } from '../Builder/Builder';
+import { Devices } from '../entities/devices';
 
 class Ubidots {
   static #devices = new Devices();
