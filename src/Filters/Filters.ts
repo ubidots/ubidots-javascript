@@ -1,6 +1,6 @@
 import mix from '../utils/applyMixins';
 import {
-  MixinContainable, MixinContainedBy,
+  MixinContainable, MixinContainedBy, MixinDates,
   MixinEndsWith,
   MixinEqualable,
   MixinGT, MixinGTE,
@@ -17,8 +17,7 @@ import { BuildManager } from '../Builder/Builder';
 export class BaseFilter {
   public async get(): Promise<UbidotsResponse<Device[]>> {
     const response = await Api.get<Device[]>(`${BuildManager.entity}?`, { params: BuildManager.params });
-    // On fetch
-    BuildManager.params = {};
+    BuildManager.reset();
     return response;
   }
 }
@@ -39,3 +38,6 @@ export class NumberFilter extends mix(BaseFilter).with(MixinEqualable, MixinIsNu
 export class ArrayFilter extends mix(BaseFilter).with(MixinContainable, MixinIsNull, MixinContainedBy, MixinLen) {
 }
 
+export class DateFilter extends mix(BaseFilter).with(MixinEqualable, MixinDates, MixinIsNull) {
+
+}

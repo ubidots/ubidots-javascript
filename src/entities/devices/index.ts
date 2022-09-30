@@ -1,4 +1,4 @@
-import { ArrayFilter, BooleanFilter, IDFilters, NumberFilter, StringFilter } from '../../Filters/Filters';
+import { ArrayFilter, BooleanFilter, DateFilter, IDFilters, NumberFilter, StringFilter } from '../../Filters/Filters';
 import { Buildable } from '../../Builder/Builder';
 
 type FilterTypes =
@@ -20,10 +20,10 @@ export class Devices extends Buildable {
     context: StringFilter,
     isActive: BooleanFilter,
     tags: ArrayFilter,
-    variables: StringFilter,
+    variablesCount: NumberFilter,
     status: StringFilter,
-    last_activity: StringFilter,
-    created_at: StringFilter,
-    updated_at: StringFilter,
+    last_activity: DateFilter,
+    created_at: DateFilter,
+    updated_at: DateFilter,
   };
 }

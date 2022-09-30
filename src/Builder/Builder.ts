@@ -5,13 +5,20 @@ type FilterTypes = typeof StringFilter;
 
 
 export class BuildManager {
-  public static params: Record<string | Filter, string | number> = {};
+  static #params: Record<string | Filter, string | number> = {};
   public static entity = '';
   public static field: string = '';
 
+  public static get params() {
+    return BuildManager.#params;
+  }
 
-  public static buildQuery(suffix = '', value: string) {
-    BuildManager.params[`${BuildManager.field}${suffix}`] = value;
+  public static reset() {
+    BuildManager.#params = {};
+  }
+
+  public static buildQuery(suffix = '', value: string | number) {
+    BuildManager.#params[`${BuildManager.field}${suffix}`] = value;
   }
 }
 
