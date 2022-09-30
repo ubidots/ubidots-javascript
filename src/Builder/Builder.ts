@@ -1,5 +1,7 @@
 import { Filter } from './constants';
-import StringFilter from '../Filters/StringFilter';
+import { IDFilters, StringFilters } from '../Filters/Filters';
+
+type FilterType = typeof StringFilters;
 
 export class BuildManager {
   public static params: Record<string, Filter> | Record<string, string> = {};
@@ -9,16 +11,19 @@ export class BuildManager {
 
 
 abstract class Buildable {
-  abstract fieldsWithFilters: Record<string, BuildManager>;
+  protected abstract fieldsWithFilters: Record<string, FilterType>;
   protected abstract entity: string;
 
-  public where<T>(field: string): T {
+  public where<T>(field: string) {
     if (!this.fieldsWithFilters[field]) {
       throw new Error(`Field ${field} does not exist`);
     }
+
     BuildManager.field = field;
     BuildManager.entity = this.entity;
-    return this.fieldsWithFilters[field] as T;
+    const Filter: FilterType = this.fieldsWithFilters[field];
+
+    return new Filter();
   }
 }
 
@@ -26,16 +31,17 @@ abstract class Buildable {
 export class Devices extends Buildable {
   protected entity: string = 'devices';
   // Just to test
-  fieldsWithFilters: Record<string, BuildManager> = {
-    name: StringFilter.getInstance(),
-    label: StringFilter.getInstance(),
-    description: StringFilter.getInstance(),
-    context: StringFilter.getInstance(),
-    tags: StringFilter.getInstance(),
-    variables: StringFilter.getInstance(),
-    status: StringFilter.getInstance(),
-    last_activity: StringFilter.getInstance(),
-    created_at: StringFilter.getInstance(),
-    updated_at: StringFilter.getInstance(),
+  fieldsWithFilters: Record<string, FilterType> = {
+    id: IDFilters,
+    name: StringFilters,
+    label: StringFilters,
+    description: StringFilters,
+    context: StringFilters,
+    tags: StringFilters,
+    variables: StringFilters,
+    status: StringFilters,
+    last_activity: StringFilters,
+    created_at: StringFilters,
+    updated_at: StringFilters,
   };
 }

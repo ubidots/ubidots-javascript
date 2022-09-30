@@ -6,9 +6,10 @@ class Ubidots {
 
   // Filters and sorters
 
-  static Devices() {
+  static get devices() {
     return this.#devices;
   }
+
 }
 
 export default Ubidots;
