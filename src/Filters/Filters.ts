@@ -1,22 +1,41 @@
 import mix from '../utils/applyMixins';
 import {
-  MixinContainable, MixinContainedBy, MixinDates,
+  MixinContainable,
+  MixinContainedBy,
+  MixinDates,
   MixinEndsWith,
   MixinEqualable,
-  MixinGT, MixinGTE,
-  MixinIsNull, MixinLen,
-  MixinLT, MixinLTE,
+  MixinGT,
+  MixinGTE,
+  MixinIsNull,
+  MixinLen,
+  MixinLT,
+  MixinLTE,
   MixinStartsWith,
 } from '../Mixins';
-import { UbidotsResponse } from '../Api/auth.models';
-import { Device } from '../entities/devices/device.model';
 import Api from '../Api/Api';
 import { BuildManager } from '../Builder/Builder';
+import { UbidotsResponse } from '../Api/auth.models';
+import { Constructable } from '../../index';
 
 
-export class BaseFilter {
-  public async get(): Promise<UbidotsResponse<Device[]>> {
-    const response = await Api.get<Device[]>(`${BuildManager.entity}?`, { params: BuildManager.params });
+export class BaseQuery<T> {
+  #type: Constructable<T>;
+
+  constructor(type: Constructable<T>) {
+    this.#type = type;
+  }
+
+  public async get(): Promise<T[]> {
+    const response = await Api.get<T[]>(`${BuildManager.entity}?`, { params: BuildManager.params });
+    BuildManager.reset();
+    const { results } = response;
+
+    return results.map((item) => new this.#type(item));
+  }
+
+  public async getRaw(): Promise<UbidotsResponse<T>> {
+    const response = await Api.get<T>(`${BuildManager.entity}?`, { params: BuildManager.params });
     BuildManager.reset();
     return response;
   }
@@ -29,7 +48,7 @@ export class BaseFilter {
   }
 
   public pick(fields: string[]) {
-    BuildManager.addRawQuery('fields', fields.join(','));
+    BuildManager.addRawQuery('fields', [...fields, 'id'].join(','));
     return this;
   }
 
@@ -38,26 +57,41 @@ export class BaseFilter {
     BuildManager.addRawQuery('page_size', pageSize);
     return this;
   }
-
-
 }
 
 
-export class StringFilter extends mix(BaseFilter).with(MixinContainable, MixinEqualable, MixinEndsWith, MixinStartsWith, MixinIsNull) {
+export class StringFilter<T> extends mix(BaseQuery).with(MixinContainable, MixinEqualable, MixinEndsWith, MixinStartsWith, MixinIsNull) {
+  constructor(type: Constructable<T>) {
+    super(type);
+  }
 }
 
-export class IDFilters extends mix(BaseFilter).with(MixinEqualable) {
+export class IDFilters<T> extends mix(BaseQuery).with(MixinEqualable) {
+  constructor(type: Constructable<T>) {
+    super(type);
+  }
 }
 
-export class BooleanFilter extends mix(BaseFilter).with(MixinEqualable, MixinIsNull) {
+export class BooleanFilter<T> extends mix(BaseQuery).with(MixinEqualable, MixinIsNull) {
+  constructor(type: Constructable<T>) {
+    super(type);
+  }
 }
 
-export class NumberFilter extends mix(BaseFilter).with(MixinEqualable, MixinIsNull, MixinGT, MixinGTE, MixinLT, MixinLTE) {
+export class NumberFilter<T> extends mix(BaseQuery).with(MixinEqualable, MixinIsNull, MixinGT, MixinGTE, MixinLT, MixinLTE) {
+  constructor(type: Constructable<T>) {
+    super(type);
+  }
 }
 
-export class ArrayFilter extends mix(BaseFilter).with(MixinContainable, MixinIsNull, MixinContainedBy, MixinLen) {
+export class ArrayFilter<T> extends mix(BaseQuery).with(MixinContainable, MixinIsNull, MixinContainedBy, MixinLen) {
+  constructor(type: Constructable<T>) {
+    super(type);
+  }
 }
 
-export class DateFilter extends mix(BaseFilter).with(MixinEqualable, MixinDates, MixinIsNull) {
-
+export class DateFilter<T> extends mix(BaseQuery).with(MixinEqualable, MixinDates, MixinIsNull) {
+  constructor(type: Constructable<T>) {
+    super(type);
+  }
 }

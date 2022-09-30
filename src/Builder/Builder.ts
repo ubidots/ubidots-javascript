@@ -1,5 +1,6 @@
 import { Filter } from './constants';
 import { StringFilter } from '../Filters/Filters';
+import { Constructable } from '../../index';
 
 type FilterTypes = typeof StringFilter;
 
@@ -38,15 +39,16 @@ export abstract class Buildable {
   protected abstract fieldsWithFilters: Record<string, FilterTypes>;
   protected abstract entity: string;
 
-  public where<T>(field: string) {
+
+  protected _where<T>(field: string, type: Constructable<T>) {
     if (!this.fieldsWithFilters[field]) {
       console.error(`Field ${field} does not exist`);
     }
 
     BuildManager.addField(field);
     BuildManager.entity = this.entity;
-    const Filter: FilterTypes = this.fieldsWithFilters[field];
 
-    return new Filter();
+    const Filter: FilterTypes = this.fieldsWithFilters[field];
+    return new Filter(type);
   }
 }
