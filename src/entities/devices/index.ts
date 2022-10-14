@@ -1,6 +1,14 @@
-import { ArrayFilter, BooleanFilter, DateFilter, IDFilters, NumberFilter, StringFilter } from '../../Filters/Filters';
+import {
+  ArrayFilter,
+  BooleanFilter,
+  DateFilter,
+  IDFilters,
+  NumberFilter,
+  StringFilter,
+} from '../../Filters/FilterBuilders';
 import { Buildable } from '../../Builder/Builder';
-import { Device, Organization, Properties } from './device.model';
+import { Device } from './device.model';
+import UbidotsObject from '../common/UbidotsObject';
 
 type FilterTypes =
   typeof StringFilter
@@ -10,50 +18,18 @@ type FilterTypes =
   | typeof ArrayFilter;
 
 
-class DeviceObject implements Device {
-  constructor({
-                createdAt,
-                description,
-                id,
-                isActive,
-                label,
-                lastActivity,
-                name,
-                organization,
-                properties,
-                tags,
-                url,
-                variables,
-                variablesNumber,
-              }: Device) {
-    this.createdAt = createdAt;
-    this.description = description;
-    this.id = id;
-    this.isActive = isActive;
-    this.label = label;
-    this.lastActivity = lastActivity;
-    this.name = name;
-    this.organization = organization;
-    this.properties = properties;
-    this.tags = tags;
-    this.url = url;
-    this.variables = variables;
-    this.variablesNumber = variablesNumber;
-  }
+class DeviceObject extends UbidotsObject<Device> {
 
-  createdAt: Date;
-  description: string;
-  id: string;
-  isActive: boolean;
-  label: string;
-  lastActivity: null;
-  name: string;
-  organization: Organization;
-  properties: Properties;
-  tags: string[];
-  url: string;
-  variables: string;
-  variablesNumber: number;
+  protected data: Partial<Device> = {};
+  protected objectName: string = 'devices';
+  protected gettable: (keyof Device)[] = ['properties', 'label', 'description', 'id', 'isActive', 'lastActivity', 'name', 'organization', 'tags', 'url', 'variables', 'variablesNumber'];
+
+
+  constructor(data: Partial<Device>) {
+    super();
+    this.createProperties();
+    this.data = data;
+  }
 
 }
 

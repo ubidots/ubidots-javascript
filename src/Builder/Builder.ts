@@ -1,5 +1,5 @@
-import { Filter } from './constants';
-import { StringFilter } from '../Filters/Filters';
+import { Filter } from './Builder.types';
+import { StringFilter } from '../Filters/FilterBuilders';
 import { Constructable } from '../../index';
 
 type FilterTypes = typeof StringFilter;

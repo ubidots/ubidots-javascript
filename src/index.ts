@@ -1,15 +1,16 @@
 import Auth from './Auth/Auth';
 import Ubidots from './Ubidots/index';
 import { Device } from './entities/devices/device.model';
-import { UbidotsResponse } from './Api/auth.models';
+import { StringFilter } from './Filters/FilterBuilders';
+import { Devices } from './entities/devices';
 
 (async () => {
   const AuthInstance = Auth.getInstance();
 
   await AuthInstance.authenticate({ apiKey: 'BBFF-61a88d34eb81a3000edc6849a37dc40e1fb' });
-  const devices: Device[] = await Ubidots.devices.where('name').startsWith('bulk').pick(['name', 'label']).orderBy('label').get();
-  // devices = [Device,Device,Device]
+  const devices: Device[] = await Ubidots.devices.where('name').pick(['name']).orderBy('label').get();
   const [device] = devices;
-  console.log(device.label);
-
+  console.log('Device with pick', device);
+  console.log('Fetching device data', await device.properties);
+  console.log('Device with data already fetched', device);
 })();

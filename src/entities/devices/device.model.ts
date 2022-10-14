@@ -1,8 +1,8 @@
 export interface Device {
+  id: string;
   properties: Properties;
   createdAt: Date;
   description: string;
-  id: string;
   isActive: boolean;
   label: string;
   lastActivity: null;

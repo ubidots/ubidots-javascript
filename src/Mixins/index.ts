@@ -87,6 +87,4 @@ export const MixinContainedBy = (superClass: any) => class extends superClass {
 
 
 export const MixinDates = (superClass: any) => class extends superClass {
-
-
 };

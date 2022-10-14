@@ -20,6 +20,9 @@ ApiInstance.interceptors.request.use(async config => {
 
 type ApiVersion = 'v1.6' | 'v2.0';
 
+interface UbidotsRawResponse {
+  data: any;
+}
 
 class Api {
 
@@ -39,6 +42,12 @@ class Api {
       previous: response.data.previous,
       results: response.data.results,
     };
+  }
+
+  static async getRawResponse<T>(url: string, config?: AxiosRequestConfig<any>): Promise<T> {
+    //TODO: Handle response and return IApiData in all responses
+    const response: any = await ApiInstance.get<T>(`${this.#version}/${url}`, config) as T;
+    return response.data;
   }
 
   static async post(url: string, data?: object, config?: object) {
