@@ -11,7 +11,7 @@ const ApiInstance = axios.create({
 ApiInstance.interceptors.request.use(async config => {
   const token = Token.getToken();
   if (!token) {
-    const authenticated = await Auth.getInstance().authenticate();
+    const authenticated = await Auth.getInstance().temporalAuth();
     if (!authenticated) throw new Error('Token is required, configure it with Auth.authenticate(Token) or Token.setToken(Token)');
   }
 

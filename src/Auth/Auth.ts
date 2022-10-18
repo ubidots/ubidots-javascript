@@ -1,8 +1,9 @@
 import axios from 'axios';
 import Token from './Token';
+import { util } from 'prettier';
+import skipToLineEnd = util.skipToLineEnd;
 
 interface IAuth {
-  token?: string;
   apiKey?: string | null;
 }
 
@@ -11,8 +12,6 @@ interface IAuth {
 class Auth {
   //Token should be here
   static #instance: Auth;
-  #tokenAuth: Token = '';
-  #apiKey: string | null = '';
 
   static getInstance(): Auth {
     if (!Auth.#instance) {
@@ -23,18 +22,23 @@ class Auth {
   }
 
 
-  async authenticate({ apiKey = null }: IAuth = {}) {
-    this.#apiKey = apiKey;
-    if (!this.#apiKey) {
+  async authenticate(token: string) {
+    Token.setToken(token);
+  }
+
+  async temporalAuth({ apiKey = null }: IAuth = {}, customHeaders = {}) {
+    if (!apiKey) {
       throw new Error('API key is required');
     }
+
 
     const data = await axios({
       method: 'POST',
       url: 'https://industrial.api.ubidots.com/api/v1.6/auth/token',
       headers: {
-        'x-ubidots-apikey': this.#apiKey,
+        'x-ubidots-apikey': apiKey,
       },
+      ...customHeaders,
     });
 
     Token.setToken(data.data.token);

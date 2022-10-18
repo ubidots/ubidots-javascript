@@ -7,7 +7,7 @@ import { Devices } from './entities/devices';
 (async () => {
   const AuthInstance = Auth.getInstance();
 
-  await AuthInstance.authenticate({ apiKey: 'BBFF-61a88d34eb81a3000edc6849a37dc40e1fb' });
+  await AuthInstance.temporalAuth({ apiKey: 'BBFF-61a88d34eb81a3000edc6849a37dc40e1fb' });
   const devices: Device[] = await Ubidots.devices.where('name').pick(['name']).orderBy('label').get();
   const [device] = devices;
   console.log('Device with pick', device);
