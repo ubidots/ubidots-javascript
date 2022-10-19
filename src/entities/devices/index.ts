@@ -9,6 +9,8 @@ import {
 import { Buildable } from '../../Builder/Builder';
 import { Device } from './device.model';
 import UbidotsObject from '../common/UbidotsObject';
+import Api from '../../Api/Api';
+import { ICreate } from '../../Builder/ICreatable';
 
 type FilterTypes =
   typeof StringFilter
@@ -33,7 +35,7 @@ class DeviceObject extends UbidotsObject<Device> {
 
 }
 
-export class Devices extends Buildable {
+export class Devices extends Buildable implements ICreate {
   protected entity: string = 'devices';
   // Just to test
   fieldsWithFilters: Record<string, FilterTypes> = {
@@ -51,7 +53,11 @@ export class Devices extends Buildable {
     updated_at: DateFilter,
   };
 
-  public where<T>(field: string) {
+  public where(field: string) {
     return super._where(field, DeviceObject);
+  }
+
+  create(data: Partial<Device>): Promise<any> {
+    return Api.post(this.entity, data);
   }
 }

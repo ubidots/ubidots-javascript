@@ -4,7 +4,7 @@ import { UbidotsResponse } from './auth.models';
 import Auth from '../Auth/Auth';
 
 const ApiInstance = axios.create({
-  baseURL: `https://industrial.api.ubidots.com/api/`,
+  baseURL: `http://localhost:8087/api/`,
 });
 
 

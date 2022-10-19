@@ -9,6 +9,7 @@ class Ubidots {
   static get devices() {
     return this.#devices;
   }
+  
 
 }
 
