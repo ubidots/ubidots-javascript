@@ -51,7 +51,6 @@ abstract class UbidotsObject<T extends UbidotsEntityBase> {
   protected belongsTo<T extends UbidotsEntityBase>(entity: Constructable<UbidotsObject<any>>, key: string): UbidotsObject<T> {
     // @ts-ignore
     const id = this.data[key].id;
-    console.log('Hello');
     return new entity({ id });
   };
 }

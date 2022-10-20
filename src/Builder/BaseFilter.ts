@@ -29,6 +29,13 @@ export class BaseFilter<T> {
     });
   }
 
+  public debug() {
+
+    const joinedParams = Object.entries(BuildManager.params).map(([key, value]) => `${key}=${value}`).join('&');
+    return `${BuildManager.entity}?${joinedParams}`;
+  }
+
+
   public async getRaw(): Promise<UbidotsResponse<T>> {
     const response = await Api.get<T>(`${BuildManager.entity}?`, { params: BuildManager.params });
     BuildManager.reset();

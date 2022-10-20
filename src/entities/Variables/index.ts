@@ -1,5 +1,4 @@
 import UbidotsObject from '../common/UbidotsObject';
-import { Device } from '../devices/device.model';
 import { Buildable } from '../../Builder/Builder';
 import { ICreate } from '../../Builder/ICreatable';
 import { FilterTypes } from '../common/types';
@@ -14,13 +13,25 @@ import {
 import Api from '../../Api/Api';
 import { Variable } from './variable.model';
 import { DeviceObject } from '../devices';
+import api from '../../Api/Api';
 
 
 export class VariableObject extends UbidotsObject<Variable> {
 
   public data: Partial<Variable> = {};
   protected apiName: string = 'variables';
-  protected gettable: (keyof Variable)[] = ['properties', 'label', 'description', 'device', 'lastActivity', 'name', 'tags', 'url'];
+  protected gettable: (keyof Variable)[] = [
+    'createdAt',
+    'syntheticExpression',
+    'description',
+    'icon',
+    'id',
+    'label',
+    'lastActivity',
+    'lastValue',
+    'name',
+    'tags',
+  ];
 
 
   constructor(data: Partial<Variable>) {
@@ -33,7 +44,7 @@ export class VariableObject extends UbidotsObject<Variable> {
     this.data = data;
   }
 
-  device(): DeviceObject {
+  get device(): DeviceObject {
     return <DeviceObject>this.belongsTo(DeviceObject, 'device');
   }
 
@@ -47,7 +58,9 @@ export class VariableObject extends UbidotsObject<Variable> {
 
 
     const key: string = this.data.label;
-    return await Api.post(`devices/${this.data?.device?.label}`, { [key]: { value: dot } });
+    const url = `devices/${this.data?.device?.label}`;
+    api.setVersion('v1.6');
+    return await Api.post(url, { [key]: { value: dot } });
   }
 }
 
@@ -55,18 +68,16 @@ export class Variables extends Buildable implements ICreate {
   protected entity: string = 'variables';
   // Just to test
   fieldsWithFilters: Record<string, FilterTypes> = {
-    id: IDFilters,
-    name: StringFilter,
-    label: StringFilter,
+    createdAt: DateFilter,
+    syntheticExpression: StringFilter,
     description: StringFilter,
-    context: StringFilter,
-    isActive: BooleanFilter,
-    tags: ArrayFilter,
-    variablesCount: NumberFilter,
-    status: StringFilter,
-    last_activity: DateFilter,
-    created_at: DateFilter,
-    updated_at: DateFilter,
+    icon: StringFilter,
+    id: NumberFilter,
+    label: StringFilter,
+    lastActivity: DateFilter,
+    lastValue: StringFilter,
+    name: StringFilter,
+    tags: DateFilter,
   };
 
   public where(field: string) {
@@ -80,5 +91,4 @@ export class Variables extends Buildable implements ICreate {
   all() {
     return super._all(VariableObject);
   }
-
 }
