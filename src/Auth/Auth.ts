@@ -2,6 +2,7 @@ import axios from 'axios';
 import Token from './Token';
 import { util } from 'prettier';
 import skipToLineEnd = util.skipToLineEnd;
+import { API_BASE_URL } from '../config';
 
 interface IAuth {
   apiKey?: string | null;
@@ -34,7 +35,7 @@ class Auth {
 
     const data = await axios({
       method: 'POST',
-      url: 'https://industrial.ubidots.com/api/v1.6/auth/token',
+      url: `${API_BASE_URL}/v1.6/auth/token`,
       headers: {
         'x-ubidots-apikey': apiKey,
       },

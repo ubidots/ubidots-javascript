@@ -2,6 +2,7 @@ import { Constructable } from '../../index';
 import Api from '../Api/Api';
 import { BuildManager } from './Builder';
 import { UbidotsResponse } from '../Api/auth.models';
+import { API_BASE_URL } from '../config';
 
 export class BaseFilter<T> {
   readonly #type: Constructable<T>;
@@ -11,7 +12,13 @@ export class BaseFilter<T> {
   }
 
   public async get(): Promise<T[]> {
-    const { results } = await Api.get<T[]>(`${BuildManager.entity}?`, { params: BuildManager.params });
+    Api.setVersion('v2.0');
+
+    const { results } = await Api.get<T[]>(`${BuildManager.entity}?`, {
+      params: BuildManager.params,
+      headers: BuildManager.headers,
+    });
+
     BuildManager.reset();
 
     return results.map((item) => {
@@ -30,9 +37,11 @@ export class BaseFilter<T> {
   }
 
   public debug() {
-
     const joinedParams = Object.entries(BuildManager.params).map(([key, value]) => `${key}=${value}`).join('&');
-    return `${BuildManager.entity}?${joinedParams}`;
+    return {
+      url: `${API_BASE_URL}/${Api.getVersion()}/${BuildManager.entity}?${joinedParams}`,
+      headers: BuildManager.headers,
+    };
   }
 
 
@@ -57,6 +66,20 @@ export class BaseFilter<T> {
   public paginate(page: number, pageSize: number) {
     BuildManager.addRawQuery('page', page);
     BuildManager.addRawQuery('page_size', pageSize);
+    return this;
+  }
+
+  public rawFilter(filterObject: { [key: string]: string | number }) {
+    for (const [key, value] of Object.entries(filterObject)) {
+      BuildManager.addRawQuery(key, value);
+      console.log(BuildManager.params);
+    }
+    return this;
+  }
+
+
+  withHeaders(headers: { [key: string]: string }) {
+    BuildManager.addHeader(headers);
     return this;
   }
 }

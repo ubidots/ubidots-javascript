@@ -10,6 +10,7 @@ export class BuildManager {
   static #params: Record<string | Filter, string | number> = {};
   static #fields: string[] = [];
   static #entity: string[] = [];
+  static #headers: Record<string, string> = {};
 
   public static get entity(): string {
     return BuildManager.#entity.join('/');
@@ -28,6 +29,15 @@ export class BuildManager {
     BuildManager.#params = {};
     BuildManager.#fields = [];
     BuildManager.#entity = [];
+    BuildManager.#headers = {};
+  }
+
+  public static addHeader(headers: Record<string, string>) {
+    BuildManager.#headers = { ...BuildManager.#headers, ...headers };
+  }
+
+  public static get headers() {
+    return BuildManager.#headers;
   }
 
 

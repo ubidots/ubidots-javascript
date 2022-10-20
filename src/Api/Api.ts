@@ -2,27 +2,23 @@ import axios, { AxiosRequestConfig } from 'axios';
 import Token from '../Auth/Token';
 import { UbidotsResponse } from './auth.models';
 import Auth from '../Auth/Auth';
+import { API_BASE_URL } from '../config';
 
 const ApiInstance = axios.create({
-  baseURL: `https://industrial.ubidots.com/api/`,
+  baseURL: API_BASE_URL,
 });
 
 
 ApiInstance.interceptors.request.use(async config => {
   const token = Token.getToken();
   if (!token) {
-    const authenticated = await Auth.getInstance().temporalAuth();
-    if (!authenticated) throw new Error('Token is required, configure it with Auth.authenticate(Token) or Token.setToken(Token)');
+    console.warn('Use Auth.authenticate() to avoid using your token in each request');
   }
-
-  return { ...config, headers: { ...config.headers, 'X-Auth-Token': token } };
+  return { ...config, headers: { 'X-Auth-Token': token, ...config.headers } };
 });
 
 type ApiVersion = 'v1.6' | 'v2.0';
 
-interface UbidotsRawResponse {
-  data: any;
-}
 
 class Api {
 
@@ -30,6 +26,10 @@ class Api {
 
   static setVersion(version: ApiVersion) {
     Api.#version = version;
+  }
+
+  static getVersion() {
+    return Api.#version;
   }
 
 
