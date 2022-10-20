@@ -34,7 +34,7 @@ class Auth {
 
     const data = await axios({
       method: 'POST',
-      url: 'https://industrial.api.ubidots.com/api/v1.6/auth/token',
+      url: 'https://industrial.ubidots.com/api/v1.6/auth/token',
       headers: {
         'x-ubidots-apikey': apiKey,
       },

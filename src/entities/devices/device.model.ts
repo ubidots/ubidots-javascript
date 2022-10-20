@@ -1,4 +1,6 @@
-export interface Device {
+import { UbidotsEntityBase } from '../common/UbidotsObject';
+
+export interface Device extends UbidotsEntityBase {
   id: string;
   properties: Properties;
   createdAt: Date;

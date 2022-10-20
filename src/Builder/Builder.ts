@@ -1,6 +1,7 @@
 import { Filter } from './Builder.types';
 import { StringFilter } from '../Filters/FilterBuilders';
 import { Constructable } from '../../index';
+import { BaseFilter } from './BaseFilter';
 
 type FilterTypes = typeof StringFilter;
 
@@ -8,7 +9,16 @@ type FilterTypes = typeof StringFilter;
 export class BuildManager {
   static #params: Record<string | Filter, string | number> = {};
   static #fields: string[] = [];
-  public static entity = '';
+  static #entity: string[] = [];
+
+  public static get entity(): string {
+    return BuildManager.#entity.join('/');
+  }
+
+  public static addEntity(entity: string) {
+    BuildManager.#entity.push(entity);
+  }
+
 
   public static get params() {
     return BuildManager.#params;
@@ -17,6 +27,7 @@ export class BuildManager {
   public static reset() {
     BuildManager.#params = {};
     BuildManager.#fields = [];
+    BuildManager.#entity = [];
   }
 
 
@@ -45,10 +56,17 @@ export abstract class Buildable {
       console.error(`Field ${field} does not exist`);
     }
 
+    BuildManager.reset();
     BuildManager.addField(field);
-    BuildManager.entity = this.entity;
+    BuildManager.addEntity(this.entity);
 
     const Filter: FilterTypes = this.fieldsWithFilters[field];
     return new Filter(type);
+  }
+
+  protected _all<T>(type: Constructable<T>) {
+    BuildManager.reset();
+    BuildManager.addEntity(this.entity);
+    return new BaseFilter(type);
   }
 }

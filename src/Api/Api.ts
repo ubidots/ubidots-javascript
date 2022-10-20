@@ -4,7 +4,7 @@ import { UbidotsResponse } from './auth.models';
 import Auth from '../Auth/Auth';
 
 const ApiInstance = axios.create({
-  baseURL: `http://localhost:8087/api/`,
+  baseURL: `https://industrial.ubidots.com/api/`,
 });
 
 
@@ -52,6 +52,11 @@ class Api {
 
   static async post(url: string, data?: object, config?: object) {
     const response: any = await ApiInstance.post(`${this.#version}/${url}`, data, config);
+    return response.data;
+  }
+
+  static async put(url: string, data?: object, config?: object) {
+    const response: any = await ApiInstance.put(`${this.#version}/${url}`, data, config);
     return response.data;
   }
 }

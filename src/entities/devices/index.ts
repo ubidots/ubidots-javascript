@@ -6,25 +6,20 @@ import {
   NumberFilter,
   StringFilter,
 } from '../../Filters/FilterBuilders';
-import { Buildable } from '../../Builder/Builder';
+import { Buildable, BuildManager } from '../../Builder/Builder';
 import { Device } from './device.model';
 import UbidotsObject from '../common/UbidotsObject';
 import Api from '../../Api/Api';
 import { ICreate } from '../../Builder/ICreatable';
-
-type FilterTypes =
-  typeof StringFilter
-  | typeof IDFilters
-  | typeof BooleanFilter
-  | typeof NumberFilter
-  | typeof ArrayFilter;
+import { FilterTypes } from '../common/types';
+import { Variables } from '../Variables';
 
 
-class DeviceObject extends UbidotsObject<Device> {
+export class DeviceObject extends UbidotsObject<Device> {
 
-  protected data: Partial<Device> = {};
-  protected objectName: string = 'devices';
-  protected gettable: (keyof Device)[] = ['properties', 'label', 'description', 'id', 'isActive', 'lastActivity', 'name', 'organization', 'tags', 'url', 'variables', 'variablesNumber'];
+  public data: Partial<Device> = {};
+  protected apiName: string = 'devices';
+  protected gettable: (keyof Device)[] = ['properties', 'label', 'description', 'id', 'isActive', 'lastActivity', 'name', 'organization', 'tags', 'url', 'variablesNumber'];
 
 
   constructor(data: Partial<Device>) {
@@ -33,6 +28,10 @@ class DeviceObject extends UbidotsObject<Device> {
     this.data = data;
   }
 
+
+  get variables(): Variables {
+    return this.hasMany<Variables>(Variables);
+  }
 }
 
 export class Devices extends Buildable implements ICreate {
@@ -56,6 +55,11 @@ export class Devices extends Buildable implements ICreate {
   public where(field: string) {
     return super._where(field, DeviceObject);
   }
+
+  public all() {
+    return super._all(DeviceObject);
+  }
+
 
   create(data: Partial<Device>): Promise<any> {
     return Api.post(this.entity, data);
