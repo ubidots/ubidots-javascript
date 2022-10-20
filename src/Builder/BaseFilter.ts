@@ -22,19 +22,21 @@ export class BaseFilter<T> {
     BuildManager.reset();
 
     return results.map((item) => {
-      const instance = new this.#type(item);
+      const ubidotsEntity = new this.#type(item);
 
-      Object.defineProperties(instance, {
+      Object.defineProperties(ubidotsEntity, {
         gettable: {
           enumerable: false,
         },
         objectName: {
           enumerable: false,
         },
+
       });
-      return instance;
+      return ubidotsEntity;
     });
   }
+
 
   public debug() {
     const joinedParams = Object.entries(BuildManager.params).map(([key, value]) => `${key}=${value}`).join('&');

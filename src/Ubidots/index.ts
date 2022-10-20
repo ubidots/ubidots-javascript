@@ -1,6 +1,8 @@
 import Api from '../Api/Api';
 import { DeviceObject, Devices } from '../entities/devices';
 import { Device } from '../entities/devices/device.model';
+import { VariableObject } from '../entities/Variables';
+import { Variable } from '../entities/Variables/variable.model';
 
 class Ubidots {
   static #devices = new Devices();
@@ -14,6 +16,10 @@ class Ubidots {
 
   static Device(data: Partial<Device>) {
     return new DeviceObject(data);
+  }
+
+  static Variable(data: Partial<Variable>) {
+    return new VariableObject(data);
   }
 }
 

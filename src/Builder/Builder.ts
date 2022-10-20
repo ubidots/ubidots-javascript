@@ -66,7 +66,6 @@ export abstract class Buildable {
       console.error(`Field ${field} does not exist`);
     }
 
-    BuildManager.reset();
     BuildManager.addField(field);
     BuildManager.addEntity(this.entity);
 
