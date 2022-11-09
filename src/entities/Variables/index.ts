@@ -88,6 +88,7 @@ export class Variables extends Buildable implements ICreate {
     return Api.post(this.entity, data);
   }
 
+
   all() {
     return super._all(VariableObject);
   }

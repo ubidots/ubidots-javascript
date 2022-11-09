@@ -11,6 +11,7 @@ export class BaseFilter<T> {
     this.#type = type;
   }
 
+
   public async get(): Promise<T[]> {
     Api.setVersion('v2.0');
 
@@ -23,7 +24,6 @@ export class BaseFilter<T> {
 
     return results.map((item) => {
       const ubidotsEntity = new this.#type(item);
-
       Object.defineProperties(ubidotsEntity, {
         gettable: {
           enumerable: false,
@@ -31,12 +31,21 @@ export class BaseFilter<T> {
         objectName: {
           enumerable: false,
         },
-
       });
       return ubidotsEntity;
     });
   }
 
+  async first() {
+    this.paginate(1, 1);
+    const results = await this.get();
+    return results[0];
+  }
+
+  async last() {
+    const results = await this.get();
+    return results[results.length - 1];
+  }
 
   public debug() {
     const joinedParams = Object.entries(BuildManager.params).map(([key, value]) => `${key}=${value}`).join('&');
@@ -74,7 +83,6 @@ export class BaseFilter<T> {
   public rawFilter(filterObject: { [key: string]: string | number }) {
     for (const [key, value] of Object.entries(filterObject)) {
       BuildManager.addRawQuery(key, value);
-      console.log(BuildManager.params);
     }
     return this;
   }

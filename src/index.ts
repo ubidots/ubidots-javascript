@@ -10,8 +10,8 @@ const auth = async () => {
 
 const getDeviceVariable = async () => {
   await auth();
-  const devices: DeviceObject[] = await Ubidots.devices.where('label').startsWith('cats').get();
-  return await devices[0].variables.where('name').contains('cats').get();
+  const device: DeviceObject = await Ubidots.devices.where('label').startsWith('cats').first();
+  return await device.variables.where('name').contains('cats').get();
 };
 
 const getWithRawFilter = async () => {
@@ -25,21 +25,23 @@ const getDeviceWithNoAuth = async () => {
 
 const debugVariableRequest = async () => {
   await auth();
-  const devices: DeviceObject[] = await Ubidots.devices.where('label').startsWith('cats').get();
-  return devices[0].variables.where('name').contains('cats').withHeaders({ 'test': 'yes' }).debug();
+  const device = await Ubidots.devices.where('label').startsWith('cats').first();
+  return device.variables.where('name').contains('cats').withHeaders({ 'test': 'yes' }).debug();
 };
 
 const sendDotsToVariable = async (dot: number) => {
   await auth();
   const device = Ubidots.Device({ id: '63405bf6fe13941e5652aec1', label: 'catsaa' });
-  const [variable] = await device.variables.where('name').contains('cats').get();
+  const variable = await device.variables.where('name').contains('cats').first();
   return await variable.sendDots(dot);
 };
 
 (async () => {
 
   try {
-    console.log(await sendDotsToVariable(4));
+    // console.log(await sendDotsToVariable(4));
+    await auth();
+    console.log(await getDeviceVariable());
   } catch (e) {
     console.log(e);
   }
@@ -47,3 +49,7 @@ const sendDotsToVariable = async (dot: number) => {
 
 
 // Pagination -> JTW
+// Easy get first/last
+// Internal request management
+
+
